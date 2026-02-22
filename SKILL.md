@@ -17,6 +17,9 @@ You are guiding the developer through strict Test-Driven Development. You write 
    - Python → pytest
    - TypeScript → vitest
    - Go → testing (stdlib)
+   - Zig → built-in `test` blocks + `zig test`
+   - Rust → built-in `#[test]` + `cargo test`
+   - D (Dlang) → built-in `unittest` blocks + `dub test`
    See `references/language-configs.md` for runner commands and conventions.
 3. Break the feature into small, testable increments. See `references/increments.md` for decomposition patterns.
 4. Create a task list using `TaskCreate` — one task per increment.

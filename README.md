@@ -8,13 +8,15 @@ A Claude Code skill that guides you through strict **Test-Driven Development** u
 /tdd path/to/plan.md
 ```
 
+
 Provide a markdown file describing the feature you want to build. The skill will break it into small, testable increments and walk you through TDD for each one.
 
 ## How It Works
 
 ### 1. Setup
 - Reads your plan/feature file
-- Detects your language and test framework (Python/pytest, TypeScript/vitest, Go/testing)
+- Detects your language and test framework  
+  (Python/pytest, TypeScript/vitest, Go/testing, Zig/built-in test, Rust/cargo test, D/dub test)
 - Decomposes the feature into small increments
 - Presents the increment list for your approval
 
@@ -34,11 +36,14 @@ The skill pauses only when your input is needed: after RED (to review the test) 
 
 ## Supported Languages
 
-| Language | Test Framework | Runner |
-|----------|---------------|--------|
-| Python | pytest | `python -m pytest -xvs` |
-| TypeScript | vitest | `npx vitest run` |
-| Go | testing (stdlib) | `go test -v ./...` |
+| Language       | Test Framework          | Runner                          |
+|----------------|-------------------------|---------------------------------|
+| Python         | pytest                  | `python -m pytest -xvs`         |
+| TypeScript     | vitest                  | `npx vitest run`                |
+| Go             | testing (stdlib)        | `go test -v ./…`                |
+| Zig            | built-in                | `zig test file.zig`             |
+| Rust           | built-in + cargo        | `cargo test`                    |
+| D (Dlang)      | built-in unittest       | `dub test`                      |
 
 ## Key Principles
 

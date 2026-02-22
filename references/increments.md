@@ -72,3 +72,21 @@ Example: "HTTP client wrapper"
 ### Go
 - Each increment maps to one `func Test*(t *testing.T)` or a subtest via `t.Run()`
 - Use table-driven tests when increments share structure
+
+### Zig
+- Each increment maps to one `test "description" { … }` block
+- Place tests in the same `.zig` file as the code (very common)
+- Use `std.testing` helpers (`expect`, `expectEqual`, `expectError`) directly
+- For many similar cases, use a loop + `std.testing.expect` inside one test block
+
+### Rust
+- Each increment maps to one `#[test] fn test_…() { … }` function
+- Place unit tests inside the module with `#[cfg(test)] mod tests { … }`
+- Use `assert_eq!`, `assert!`, or `#[should_panic]` for error cases
+- Prefer table-driven style with arrays/vecs of test cases when increments are similar
+
+### D (Dlang)
+- Each increment maps to one `unittest { … }` block (can be anywhere in the module)
+- Place tests directly inside production modules (idiomatic)
+- Use plain `assert(condition, "message")` — compiler shows line on failure
+- Group related tests in the same module; use `version(unittest)` for setup helpers if needed
