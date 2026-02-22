@@ -1,6 +1,6 @@
 # TDD Skill for Claude Code
 
-A Claude Code skill that guides you through strict **Test-Driven Development** using Red-Green-Refactor cycles with human-in-the-loop pauses at every step.
+A Claude Code skill that guides you through strict **Test-Driven Development** using Red-Green-Refactor cycles.
 
 ## Usage
 
@@ -22,11 +22,11 @@ Provide a markdown file describing the feature you want to build. The skill will
 
 | Phase | What happens |
 |-------|-------------|
-| **RED** | Proposes a failing test, writes it to a temp file for you to review/edit, then runs it to confirm it fails |
-| **GREEN** | Proposes minimal code to make the test pass, writes it to a temp file for review, then runs the full suite |
-| **REFACTOR** | Suggests improvements (duplication, naming, extraction), re-runs tests after changes |
+| **RED** | Writes a failing test directly to the real test file, runs it to confirm failure, then pauses for your review |
+| **GREEN** | Writes minimal code directly to the real source file, runs the full suite — continues automatically if green |
+| **REFACTOR** | Applies improvements directly, re-runs tests — continues automatically if green |
 
-You stay in control at every step — the skill pauses and asks before proceeding.
+The skill pauses only when your input is needed: after RED (to review the test) and when something goes wrong. Everything else flows automatically.
 
 ### 3. Wrap-up
 - Summarizes what was built (increments, tests, final status)
@@ -42,11 +42,11 @@ You stay in control at every step — the skill pauses and asks before proceedin
 
 ## Key Principles
 
-- **You write the code** — the skill proposes, you decide
+- **Writes directly to real files** — no temp files, no manual moving. You have git for undo.
+- **Pauses only when needed** — after RED confirmation and on errors. No unnecessary interruptions.
 - **One behavior per test** — tests stay focused and readable
 - **Simplest case first** — degenerate/edge cases before the general case
-- **Full suite on green** — all tests run at every green/refactor step, not just the new one
-- **Proposals go to temp files** — never writes directly to your source files
+- **Full suite on green** — all tests run at every green/refactor step
 
 ## Installation
 

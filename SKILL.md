@@ -1,14 +1,14 @@
 ---
 skill: tdd
-trigger: "Use when the user invokes /tdd or asks to do TDD on a feature/plan file. Guides the developer through Red-Green-Refactor cycles with human-in-the-loop pauses at each step."
+trigger: "Use when the user invokes /tdd or asks to do TDD on a feature/plan file. Guides the developer through Red-Green-Refactor cycles."
 arguments:
   - name: plan_file
     description: "Path to a markdown file describing the feature/plan to implement via TDD"
 ---
 
-# TDD Skill — Red-Green-Refactor with Human in the Loop
+# TDD Skill — Red-Green-Refactor
 
-You are guiding the developer through strict Test-Driven Development. The developer writes all code — you propose, they decide. Pause at every step for review.
+You are guiding the developer through strict Test-Driven Development. You write code directly to the real files — the user can always undo with git. Pause only when the user's input is needed, not at every step.
 
 ## Phase 1: Setup
 
@@ -30,44 +30,34 @@ For each increment, follow Red-Green-Refactor strictly. Mark the current increme
 
 ### RED — Write a Failing Test
 
-1. Propose a failing test. Write it to a temporary test file (e.g., `tests/test_proposed.py` or the equivalent for the project's test directory) so the user can review and edit it in their editor. Also show the test code in a fenced code block for quick reference. Explain what behavior it verifies and why this is the right next step.
-2. Pause with `AskUserQuestion`:
-   - "I've written the proposed test to `<temp_test_file>`. Review/edit it in your editor, then tell me when you're ready to run it."
-   - Options: "Ready, run the test" / "I have questions first"
-3. When the user says ready, run the test using the appropriate runner (see language-configs.md). Use `Bash`.
-4. Confirm the test **fails**. If it passes unexpectedly, flag this:
+1. Write the failing test **directly to the real test file** (e.g., `tests/test_feature.py`, following existing project conventions). Show the test in a fenced code block and briefly explain what behavior it verifies.
+2. Run the test using the appropriate runner (see language-configs.md). Use `Bash`.
+3. Confirm the test **fails**. If it passes unexpectedly, stop and flag this:
    - "The test passed already — this means either the behavior is already implemented or the test isn't asserting the right thing. Let's investigate before moving on."
+4. Pause with `AskUserQuestion`:
+   - "RED: test fails as expected. Review the test above — ready to move to GREEN?"
+   - Options: "Looks good, write the code" / "I want to change the test first"
 
 ### GREEN — Write Minimal Code to Pass
 
-5. Propose the **minimal** production code to make the failing test pass. Write it to a temporary file (e.g., `src/proposed_solution.py` or equivalent) so the user can review and edit it. Also show it in a fenced code block. Emphasize: write only enough to pass, nothing more.
-6. Pause with `AskUserQuestion`:
-   - "I've written the proposed code to `<temp_code_file>`. Review/edit it, then move it to the right location when ready."
-   - Options: "Ready, run the tests" / "I have questions first"
-7. When the user says ready, run **all** tests (not just the new one). Use `Bash`.
-8. Confirm all tests **pass**. If any fail, help debug:
-   - Read the failure output carefully.
-   - Suggest a fix. Do NOT write it — let the user apply it.
-   - Re-run tests after they signal ready.
+5. Write the **minimal** production code **directly to the real source file** to make the failing test pass. Show it in a fenced code block. Write only enough to pass, nothing more.
+6. Run **all** tests (not just the new one). Use `Bash`.
+7. If all tests **pass**, move directly to REFACTOR — no pause needed.
+8. If any test **fails**, show the failure output and pause:
+   - "A test failed unexpectedly. Here's the output. Want me to fix it, or do you want to handle it?"
+   - Options: "Fix it" / "I'll handle it"
 
 ### REFACTOR — Improve the Code
 
-9. Review the current code. Suggest refactoring opportunities if any exist:
-   - Duplication removal
-   - Better naming
-   - Extract method/function
-   - Simplify conditionals
-   If no refactoring is needed, say so explicitly.
-10. If refactoring is suggested, pause with `AskUserQuestion`:
-    - "I've suggested some refactoring above. Apply what you agree with, skip what you don't, then tell me when you're ready to run tests."
-    - Options: "Ready, run the tests" / "Skip refactoring, move on" / "I have questions"
-11. If refactoring was done, run all tests again to confirm still green.
+9. Review the current code. If refactoring opportunities exist (duplication, naming, extraction, simplification), apply them directly and run all tests to confirm green. Show what you changed in a fenced code block.
+10. If no refactoring is needed, say so and move on — no pause.
+11. If refactoring causes a test failure, revert and pause to discuss.
 
 ### NEXT
 
 12. Mark the increment as `completed` via `TaskUpdate`.
-13. Briefly summarize: what test was added, what code was written, what was refactored.
-14. Move to the next increment. Go back to RED.
+13. Briefly summarize: what test was added, what code was written, what was refactored (if anything).
+14. Move directly to the next increment — go back to RED. No pause between increments.
 
 ## Phase 3: Wrap-up
 
@@ -80,10 +70,11 @@ After all increments are complete:
 
 ## Rules
 
-- **Write proposals to temporary files** (e.g., `tests/test_proposed.py`, `src/proposed_solution.py`) so the user can review and edit them in their editor. Never write directly to the final source/test files — the developer moves or merges the proposed code when ready.
-- **Every pause is an `AskUserQuestion` call.** Do not continue without explicit user go-ahead.
+- **Write directly to real files.** No temp files, no asking the user to move code. The user has git for undo.
+- **Pause only when needed:** after RED confirms failure (so the user can review the test), and when something goes wrong (unexpected pass, test failure at GREEN, refactoring breakage). Do NOT pause at GREEN success or REFACTOR success.
 - **Run the full test suite** at Green and Refactor steps, not just the new test.
 - **Keep tests behavior-focused.** Test what the code does, not how it does it.
 - **Simplest case first.** Start with the degenerate/edge case, build toward the general case.
 - **One assertion per test** when possible. Each test should verify one behavior.
 - **Track progress visually** using TaskCreate/TaskUpdate so the user sees where they are.
+- **Follow existing project conventions.** Match the test file locations, naming patterns, and style already in the codebase.
